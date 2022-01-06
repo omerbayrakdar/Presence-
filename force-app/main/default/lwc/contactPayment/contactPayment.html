@@ -1,0 +1,80 @@
+<template>
+   <lightning-card title="Contact Detail" icon-name="custom:custom63">
+      <div class="slds-m-around_medium">
+         <lightning-accordion class="example-accordion" allow-multiple-sections-open
+            onsectiontoggle={handleToggleSection}
+            active-section-name="B">
+            <template if:true={contacts}>
+               <template for:each={contacts} for:item="contact">
+                  <div key={contact.Id}>
+                     <lightning-accordion-section name="A" label={contact.FirstName}>
+                        <lightning-button-menu slot="actions"
+                           alternative-text="Show menu"
+                           icon-size="x-small"
+                           menu-alignment="right">
+                           <lightning-menu-item value="Add New" label="Create New Payment" 
+                           onclick={handleCreatePayment} data-id={contact.Id}></lightning-menu-item>
+                        </lightning-button-menu>
+                        <p><b>Total Amount:</b>&nbsp;{contact.Total_Amount_Of_Payment__c}</p>
+                        <p><b>Recent Date:</b>&nbsp;{contact.Recent_Payment_Date__c}</p>
+                        <template if:true={contact.showCreatePayment}>
+                        <lightning-record-edit-form
+                                        object-api-name="Payment__c"  onsuccess={handleSuccess}>
+                                        <lightning-messages> </lightning-messages>
+                                        <lightning-input-field field-name="Contact__c" value={contact.Id}>
+                                        </lightning-input-field>
+                                        <lightning-input-field field-name="Amount__c" > </lightning-input-field>
+                                        <lightning-input-field field-name="Payment_Date__c"> </lightning-input-field>
+                                        <lightning-input-field field-name="Project__c"> </lightning-input-field>
+                                        <lightning-button
+                                            class="slds-m-top_small"
+                                            variant="brand"
+                                            type="submit"
+                                            name="Create Payment"
+                                            label="Create Payment">
+                                         </lightning-button>
+                        </lightning-record-edit-form>
+                        </template>
+                        <template for:each={contact.Payments__r} for:item="pay">
+                           <div key={pay.Id}>
+                                
+                              <lightning-record-edit-form
+                                 record-id={pay.Id}
+                                 object-api-name="Payment__c">
+                                 <table style="width:100%">
+                                    <tr>
+                                       <th>
+                                          <lightning-input-field field-name="Amount__c"> </lightning-input-field>
+                                       </th>
+                                       <th>
+                                          <lightning-input-field field-name="Payment_Date__c"> </lightning-input-field>
+                                       </th>
+                                       <th>
+                                           <div class="slds-p-top_medium">
+                                          <lightning-button-icon icon-name="utility:save"   
+                                             alternative-text="Save"   
+                                             class="slds-m-left_xx-small" type="submit"
+                                             title="Save" ></lightning-button-icon>  
+                                             <lightning-button-icon icon-name="utility:delete"   
+                                                alternative-text="Delete"   
+                                                class="slds-m-left_xx-small"  title="Delete"
+                                                data-id={pay.Id} onclick={handleDelete}
+                                                ></lightning-button-icon> 
+                                                </div>      
+                                       </th>
+                                    </tr>
+                                 </table>
+                              </lightning-record-edit-form>
+                           </div>
+                        </template>
+                     </lightning-accordion-section>
+                  </div>
+               </template>
+            </template>
+            <template if:true={error}>
+               {error}
+            </template>
+         </lightning-accordion>
+      </div>
+   </lightning-card>
+</template>
